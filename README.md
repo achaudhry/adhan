@@ -63,10 +63,10 @@ VOILA! You're done!! Plug in your speakers and enjoy!
 
 ## Tips:
 1. You can see your currently scheduled jobs by running `crontab -l`
-2. The output of the job that runs at 1am every night is being captured in `/home/pi/adhan/adhan.log`. This way you can keep track of all successful runs and any potential issues. This file will be truncated at midnight on the forst day of each month. To view the output type `$ cat /home/pi/adhan/adhan.log`
+2. The output of the job that runs at 1am every night is being captured in `/home/pi/adhan/adhan.log`. This way you can keep track of all successful runs and any potential issues. This file will be truncated at midnight on first day of each month. To view the output type `$ cat /home/pi/adhan/adhan.log`
 
 ## Diclaimer
-I can't take much credit for this. Most of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
+I can't take much credit for this. Most of the code I've used here is written by other developers (mentioned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
 
 ### Credits
 I have made minor modifications / bug fixes but I've used the following as starting point:
