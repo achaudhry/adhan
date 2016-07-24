@@ -9,12 +9,12 @@ This projects uses a python script which automatically calculates [adhan](https:
 3. Auxiliary audio cable
 
 ## Instructions
-1. Install git: Go to raspberry pi terminal (command line interface) and install `git`
+1. Install git: Go to Raspberry Pi terminal (command line interface) and install `git`
   * `$ sudo apt-get install git`
-2. Clone repo: Clone this repository on your raspberry pi in your `home` directory. (Tip: run `$ cd ~` to go to your home directory)
+2. Clone repo: Clone this repository in `home` directory. (Tip: run `$ cd ~` to go to your home directory)
   * `$ git clone git@github.com:achaudhry/adhan.git`
   * After doing that you should see an `adhan` direcotry in your `home` directory. 
-3. Go into `adhan` directory: `$cd adhan`
+3. Go into `adhan`: `$cd adhan`
 4. Open `updateAzaanTimers.py` in your favorite editor. For instance, `nano` is a simple one: `$ nano updateAzaanTimers.py`
 
 ## Configuration
@@ -36,7 +36,7 @@ PT.setMethod('ISNA')
 times = PT.getTimes((now.year,now.month,now.day), (lat, long), -5, 1) 
 ```
 
-Save your changes by pressing `Control X` and then `Y`.
+Save your changes by pressing `Control X` to exit and then `Y` to save changes.
 
 ## Run it for the first time
 Run this command `$ python /home/pi/adhan/updateAzaanTimers.py`. If everythig worked, your output will look something like this:
