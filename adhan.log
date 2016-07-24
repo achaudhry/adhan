@@ -1,0 +1,14 @@
+03:56
+12:53
+16:52
+20:13
+21:49
+<generator object find_command at 0x76ab2120>
+56 3 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah-Fajr.mp3 > /dev/null 2>&1 # fajr
+53 12 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # dhuhr
+52 16 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # asr
+13 20 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # maghrib
+49 21 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # isha
+0 1 * * * python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1
+@monthly truncate -s 0 /home/pi/adhan/adhan.log 2>&1
+Script execution finished at: 2016-07-24 13:50:59.812156
