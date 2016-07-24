@@ -2,13 +2,13 @@
 This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan) times every day and plays all five adhans at their scheduled time using cron. 
 
 ## Diclaimer
-I can't take much credit for this at all. Most of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put the plumming in place so that people can get this up and running with minimal effort. 
+I can't take much credit for this at all. Most of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
 
 ### Credits
-I have made minor modifications / bug fixes but I've use the following as starting point:
-Python code to calculate adhan times: http://praytimes.org/code/ 
-Basic code to turn the above into an adhan clock: http://randomconsultant.blogspot.co.uk/2013/07/turn-your-raspberry-pi-into-azaanprayer.html
-Cron scheduler: https://pypi.python.org/pypi/python-crontab/ 
+I have made minor modifications / bug fixes but I've used the following as starting point:
+* Python code to calculate adhan times: http://praytimes.org/code/ 
+* Basic code to turn the above into an adhan clock: http://randomconsultant.blogspot.co.uk/2013/07/turn-your-raspberry-pi-into-azaanprayer.html
+* Cron scheduler: https://pypi.python.org/pypi/python-crontab/ 
 
 ## Prerequisites
 1. Raspberry Pi running Raspbian
@@ -19,28 +19,28 @@ Cron scheduler: https://pypi.python.org/pypi/python-crontab/
 
 ## Instructions
 1. Install git: Go to raspberry pi terminal (command line interface) and install `git`
-  * `sudo apt-get install git`
-2. Clone repo: Clone this repository in your raspberry pi in your `home` directory. (Tip: run `cd ~` to go to your home directory)
-  * `git clone git@github.com:achaudhry/adhan.git`
+  * `$ sudo apt-get install git`
+2. Clone repo: Clone this repository on your raspberry pi in your `home` directory. (Tip: run `$ cd ~` to go to your home directory)
+  * `$ git clone git@github.com:achaudhry/adhan.git`
   * After doing that you should see an `adhan` direcotry in your `home` directory. 
-3. Go to `adhan` directory: `cd adhan`
-4. Open `updateAzaanTimers.py` in your favorite editor. For instance, `nano` is a simple one: `nano updateAzaanTimers.py`
+3. Go into `adhan` directory: `$cd adhan`
+4. Open `updateAzaanTimers.py` in your favorite editor. For instance, `nano` is a simple one: `$ nano updateAzaanTimers.py`
 
 ## Configuration
 The original python script is super configurable. Please see the [manual](http://praytimes.org/manual) for advanced instructions. However, below are the three basic things you'll need to change to get it up and running.
 
-1. Set the latitude and longitude so it can calculate accurate prayer times for that location. Modify the following lines:
+* Set the latitude and longitude so it can calculate accurate prayer times for that location. Modify the following lines:
 ```
 #Set latitude and longitude here
 #--------------------
 lat = 42.288788
 long = -71.551678
 ```
-2. Set adhan time [calculation method](http://praytimes.org/manual#Set_Calculation_Method). Modify the following line:
+* Set adhan time [calculation method](http://praytimes.org/manual#Set_Calculation_Method). Modify the following line:
 ```
 PT.setMethod('ISNA')
 ```
-3. And finally, set the time-zone. In the following example it's set to Eastern time hence the `-5`. The `1` after `-5` is for daylight saving.
+* And finally, set the time-zone. In the following example it's set to Eastern time hence the `-5`. The `1` after `-5` is for daylight saving.
 ```
 times = PT.getTimes((now.year,now.month,now.day), (lat, long), -5, 1) 
 ```
@@ -48,7 +48,7 @@ times = PT.getTimes((now.year,now.month,now.day), (lat, long), -5, 1)
 Save your changes by pressing `Control X` and then `Y`.
 
 ## Run it for the first time
-Run this command `python /home/pi/adhan/updateAzaanTimers.py`. If everythig worked, your output will look something like this:
+Run this command `$ python /home/pi/adhan/updateAzaanTimers.py`. If everythig worked, your output will look something like this:
 ```
 03:56
 12:53
@@ -66,10 +66,10 @@ Run this command `python /home/pi/adhan/updateAzaanTimers.py`. If everythig work
 Script execution finished at: 2016-07-24 14:59:16.021888
 ```
 
-If you look at the last 8 lines, you'll see that 5 adhan times have been scheduled. Then there is anothe line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.
+If you look at the last 8 lines, you'll see that 5 adhan times have been scheduled. Then there is another line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.
 
-VOILA! You're done!!
+VOILA! You're done!! Plug in your speakers and enjoy!
 
 ## Tips:
 1. You can see your currently scheduled jobs by running `crontab -l`
-2. The output of the job that runs at 1am every night is being captured in `/home/pi/adhan/adhan.log`. This way you can keep track of all successful runs and any potential issues. This file will be truncated at midnight on the forst day of each month.
+2. The output of the job that runs at 1am every night is being captured in `/home/pi/adhan/adhan.log`. This way you can keep track of all successful runs and any potential issues. This file will be truncated at midnight on the forst day of each month. To view the output type `$ cat /home/pi/adhan/adhan.log`
