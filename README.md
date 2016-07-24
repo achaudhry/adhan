@@ -2,7 +2,7 @@
 This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan) times every day and plays all five adhans at their scheduled time using cron. 
 
 ## Diclaimer
-I can't take much credit for this at all. Most of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
+I can't take much credit for this. Most of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
 
 ### Credits
 I have made minor modifications / bug fixes but I've used the following as starting point:
@@ -29,7 +29,7 @@ I have made minor modifications / bug fixes but I've used the following as start
 ## Configuration
 The original python script is super configurable. Please see the [manual](http://praytimes.org/manual) for advanced instructions. However, below are the three basic things you'll need to change to get it up and running.
 
-* Set the latitude and longitude so it can calculate accurate prayer times for that location. Modify the following lines:
+* Set the latitude and longitude so it can calculate accurate prayer times for that location. You can use any online geocoding tool to get lat/long from an address e.g. [LatLong.net](http://www.latlong.net/convert-address-to-lat-long.html). Modify the following lines:
 ```
 #Set latitude and longitude here
 #--------------------
