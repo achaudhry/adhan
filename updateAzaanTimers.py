@@ -17,7 +17,7 @@ PT = PrayTimes()
 #Set calculation method and timezone here
 #--------------------
 PT.setMethod('ISNA')
-times = PT.getTimes((now.year,now.month,now.day), (lat, long), -5,1) 
+times = PT.getTimes((now.year,now.month,now.day), (lat, long), -5) 
 
 print times['fajr']
 print times['dhuhr']
