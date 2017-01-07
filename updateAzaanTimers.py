@@ -14,8 +14,6 @@ strPlayFajrAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-Makkah-Faj
 strPlayAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1'
 strUpdateCommand = 'python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
 strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
-strHdmiOff = '30 22 * * * sh /home/pi/prayer_times/static/rpi-hdmi.sh off'
-strHdmiOn = '00 5 * * * sh /home/pi/prayer_times/static/rpi-hdmi.sh on'
 strJobComment = 'rpiAdhanClockJob'
 
 #Set latitude and longitude here
@@ -30,18 +28,10 @@ PT.setMethod('ISNA')
 utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
 
-times = PT.getTimes((now.year,now.month,now.day), (lat, long), utcOffset, isDst) 
 
-print times['fajr']
-print times['dhuhr']
-print times['asr']
-print times['maghrib']
-print times['isha']
-
-
-#Update Crontab with Prayer Times
+#HELPER FUNCTIONS
 #---------------------------------
-
+#---------------------------------
 #Function to add azaan time to cron
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)  
@@ -53,7 +43,6 @@ def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job.set_comment(strJobComment)
   print job
   return
-
 
 def addUpdateCronJob (objCronTab, strCommand):
   job = objCronTab.new(command=strCommand)
@@ -71,28 +60,33 @@ def addClearLogsCronJob (objCronTab, strCommand):
   job.set_comment(strJobComment)
   print job
   return
+#---------------------------------
+#---------------------------------
+#HELPER FUNCTIONS END
 
-def addToggleHDMI (objCronTab, strCommand):
-  job = objCronTab.new(command=strCommand)
-  job.minute.on(0)
-  job.hour.on(0)
-  print job
-  return
-
-#jobs = system_cron.find_comment(strJobComment)
-#for j in jobs:
-#  print j
-
+# Remove existing jobs created by this script
 system_cron.remove_all(comment=strJobComment)
 
+# Calculate prayer times
+times = PT.getTimes((now.year,now.month,now.day), (lat, long), utcOffset, isDst) 
+print times['fajr']
+print times['dhuhr']
+print times['asr']
+print times['maghrib']
+print times['isha']
+
+# Add times to crontab
 addAzaanTime('fajr',times['fajr'],system_cron,strPlayFajrAzaanMP3Command)
 addAzaanTime('dhuhr',times['dhuhr'],system_cron,strPlayAzaanMP3Command)
 addAzaanTime('asr',times['asr'],system_cron,strPlayAzaanMP3Command)
 addAzaanTime('maghrib',times['maghrib'],system_cron,strPlayAzaanMP3Command)
 addAzaanTime('isha',times['isha'],system_cron,strPlayAzaanMP3Command)
+
+# Run this script again overnight
 addUpdateCronJob(system_cron, strUpdateCommand)
+
+# Clear the logs every month
 addClearLogsCronJob(system_cron,strClearLogsCommand)
-#addToggleHDMI(system_cron, strHdmiOff)
-#addToggleHDMI(system_cron, strHdmiOn)
+
 system_cron.write_to_user(user='pi')
 print 'Script execution finished at: ' + str(now)
