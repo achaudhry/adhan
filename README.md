@@ -2,7 +2,7 @@
 This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan) times every day and plays all five adhans at their scheduled time using cron. 
 
 ## Diclaimer
-I can't take much credit for this at all. Most of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
+I can't take much credit for this. A lot of the code I've used here is written by other developers (methoned below). I've only cleaned up some pieces and have put plumming in place so that people can get this up and running with minimal effort. 
 
 ### Credits
 I have made minor modifications / bug fixes but I've used the following as starting point:
@@ -33,40 +33,34 @@ The original python script is super configurable. Please see the [manual](http:/
 ```
 #Set latitude and longitude here
 #--------------------
-lat = 42.288788
-long = -71.551678
+lat = 42.3601
+long = -71.0589
 ```
 * Set adhan time [calculation method](http://praytimes.org/manual#Set_Calculation_Method). Modify the following line:
 ```
 PT.setMethod('ISNA')
 ```
-* And finally, set the time-zone. In the following example it's set to Eastern time hence the `-5`. The `1` after `-5` is for daylight saving.
-```
-times = PT.getTimes((now.year,now.month,now.day), (lat, long), -5, 1) 
-```
-
 Save your changes by pressing `Control X` and then `Y`.
 
 ## Run it for the first time
 Run this command `$ python /home/pi/adhan/updateAzaanTimers.py`. If everythig worked, your output will look something like this:
 ```
-03:56
-12:53
-16:52
-20:13
-21:49
-<generator object find_command at 0x76a714e0>
-56 3 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah-Fajr.mp3 > /dev/null 2>&1 # fajr
-53 12 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # dhuhr
-52 16 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # asr
-13 20 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # maghrib
-49 21 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # isha
-0 1 * * * python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1
-@monthly truncate -s 0 /home/pi/adhan/adhan.log 2>&1
-Script execution finished at: 2016-07-24 14:59:16.021888
+05:51
+11:52
+14:11
+16:30
+17:53
+51 5 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah-Fajr.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+52 11 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+11 14 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+30 16 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+53 17 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+0 1 * * * python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
+@monthly truncate -s 0 /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
+Script execution finished at: 2017-01-06 21:22:31.512667
 ```
 
-If you look at the last 8 lines, you'll see that 5 adhan times have been scheduled. Then there is another line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.
+If you look at the last few lines, you'll see that 5 adhan times have been scheduled. Then there is another line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.
 
 VOILA! You're done!! Plug in your speakers and enjoy!
 
