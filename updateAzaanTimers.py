@@ -2,6 +2,8 @@
 
 import datetime
 import time
+import sys
+sys.path.insert(0, './crontab')
 
 from praytimes import PrayTimes
 PT = PrayTimes() 
