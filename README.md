@@ -41,7 +41,7 @@ Run this command `$ python /home/pi/adhan/updateAzaanTimers.py`. If everythig wo
 14:11
 16:30
 17:53
-51 5 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah-Fajr.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+51 5 * * * omxplayer -o local /home/pi/adhan/Adhan-fajr.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
 52 11 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
 11 14 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
 30 16 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
