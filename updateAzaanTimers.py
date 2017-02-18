@@ -3,7 +3,7 @@
 import datetime
 import time
 import sys
-sys.path.insert(0, './crontab')
+sys.path.insert(0, '/home/pi/adhan/crontab')
 
 from praytimes import PrayTimes
 PT = PrayTimes() 
