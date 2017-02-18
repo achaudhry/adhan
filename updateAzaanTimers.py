@@ -12,7 +12,7 @@ from crontab import CronTab
 system_cron = CronTab(user='pi')
 
 now = datetime.datetime.now()
-strPlayFajrAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-Makkah-Fajr.mp3 > /dev/null 2>&1'
+strPlayFajrAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-fajr.mp3 > /dev/null 2>&1'
 strPlayAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1'
 strUpdateCommand = 'python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
 strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
