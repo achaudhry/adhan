@@ -48,8 +48,8 @@ def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
 
 def addUpdateCronJob (objCronTab, strCommand):
   job = objCronTab.new(command=strCommand)
-  job.minute.on(0)
-  job.hour.on(1)
+  job.minute.on(15)
+  job.hour.on(3)
   job.set_comment(strJobComment)
   print job
   return
