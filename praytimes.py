@@ -91,7 +91,7 @@ class PrayTimes():
 			'params': { 'fajr': 19.5, 'isha': 17.5 } },
 		'Makkah': {
 			'name': 'Umm Al-Qura University, Makkah',
-			'params': { 'fajr': 18.5, 'isha': 19 } },  # fajr was 19 degrees before 1430 hijri
+			'params': { 'fajr': 18.5, 'isha': '90 min' } },  # fajr was 19 degrees before 1430 hijri
 		'Karachi': {
 			'name': 'University of Islamic Sciences, Karachi',
 			'params': { 'fajr': 18, 'isha': 18 } },
@@ -315,7 +315,7 @@ class PrayTimes():
 			times['maghrib'] = times['sunset'] - self.eval(params['maghrib']) / 60.0
 
 		if self.isMin(params['isha']):
-			times['isha'] = times['maghrib'] - self.eval(params['isha']) / 60.0
+			times['isha'] = times['maghrib'] + self.eval(params['isha']) / 60.0
 		times['dhuhr'] += self.eval(params['dhuhr']) / 60.0
 
 		return times
