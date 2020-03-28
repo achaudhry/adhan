@@ -26,7 +26,7 @@ long = -71.551678
 #Set calculation method, utcOffset and dst here
 #By default system timezone will be used
 #--------------------
-PT.setMethod('ISNA')
+PT.setMethod('Diyanet')
 utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
 
