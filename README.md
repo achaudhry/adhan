@@ -1,11 +1,11 @@
 # Raspberry Pi Adhan Clock
-This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan){:target="_blank"} times every day and plays all five adhans with Logitech Media Server and Airplay Speakers at their scheduled time using cron.
+This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan) times every day and plays all five adhans with Logitech Media Server and Airplay Speakers at their scheduled time using cron.
 
 ## Prerequisites
 1. Raspberry Pi running Raspbian
   1. I would stay away from Raspberry Pi zero esp if you're new to this stuff since it doesn't come with a built in audio out port.
-  2. Also, if you haven't worked with raspberry pi before, I would highly recommend using [these](https://www.raspberrypi.org/documentation/installation/noobs.md){:target="_blank" rel="noopener"} instructions to get it up and running: https://www.raspberrypi.org/documentation/installation/noobs.md
-2. Airplay Speakers ([GGMM](https://amzn.to/2RwiA4B){:target="_blank" rel="noopener"}, [Sonos](https://amzn.to/2XqB4al){:target="_blank" rel="noopener"})
+  2. Also, if you haven't worked with raspberry pi before, I would highly recommend using [these](https://www.raspberrypi.org/documentation/installation/noobs.md) instructions to get it up and running: https://www.raspberrypi.org/documentation/installation/noobs.md
+2. Airplay Speakers ([GGMM](https://amzn.to/2RwiA4B), [Sonos](https://amzn.to/2XqB4al))
 3. Logitech Media Server
 
 ## Instructions
@@ -16,7 +16,7 @@ This projects uses a python script which automatically calculates [adhan](https:
 3. Clone repo: Clone this repository on your raspberry pi in your `home` directory. (Tip: run `$ cd ~` to go to your home directory)
     * `$ git clone git@github.com:semaf/adhan.git`
     * After doing that you should see an `adhan` direcotry in your `home` directory.
-4. Install LMS (Logitech Media Server): Download lastest [Logitech Media Server](http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_arm.deb){:target="_blank" rel="noopener"} Debian Package for Raspberry Pi.
+4. Install LMS (Logitech Media Server): Download lastest [Logitech Media Server](http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_arm.deb) Debian Package for Raspberry Pi.
     * `$ wget http://downloads.slimdevices.com/LogitechMediaServer_v7.9.2/logitechmediaserver_7.9.2_arm.deb`
     * `$ sudo dpkg -i logitechmediaserver_7.9.2_arm.deb`
 5. Open LMS on browser, setup LMS and connect your Airplay Speakers.
@@ -29,7 +29,7 @@ This projects uses a python script which automatically calculates [adhan](https:
 6. Open `updateAzaanTimers.py` in your favorite editor. For instance, `nano` is a simple one: `$ nano updateAzaanTimers.py`. Change the port (9000 or 9001 or ...) to that is used on your Server
 
 ## Configuration
-The original python script is super configurable. Please see the [manual](http://praytimes.org/manual){:target="_blank" rel="noopener"} for advanced instructions. However, below are the three basic things you'll need to change to get it up and running.
+The original python script is super configurable. Please see the [manual](http://praytimes.org/manual) for advanced instructions. However, below are the three basic things you'll need to change to get it up and running.
 
 * Set the latitude and longitude so it can calculate accurate prayer times for that location. Modify the following lines:
 ```
@@ -38,7 +38,7 @@ The original python script is super configurable. Please see the [manual](http:/
 lat = 42.3601
 long = -71.0589
 ```
-* Set adhan time [calculation method](http://praytimes.org/manual#Set_Calculation_Method){:target="_blank" rel="noopener"}. Modify the following line:
+* Set adhan time [calculation method](http://praytimes.org/manual#Set_Calculation_Method). Modify the following line:
 ```
 PT.setMethod('ISNA')
 ```
@@ -73,7 +73,7 @@ VOILA! You're done!! Plug in your speakers and enjoy!
 
 ### Credits
 I have made modifications / bug fixes but I've used the following as starting point:
-* Main Source of this code is by [achaudhry https://github.com/achaudhry/adhan](https://github.com/achaudhry/adhan){:target="_blank" rel="noopener"}
+* Main Source of this code is by [achaudhry https://github.com/achaudhry/adhan](https://github.com/achaudhry/adhan)
 * Python code to calculate adhan times: http://praytimes.org/code/
 * Basic code to turn the above into an adhan clock: http://randomconsultant.blogspot.co.uk/2013/07/turn-your-raspberry-pi-into-azaanprayer.html
 * Cron scheduler: https://pypi.python.org/pypi/python-crontab/
