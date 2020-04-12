@@ -1,5 +1,5 @@
 # Raspberry Pi Adhan Clock
-This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan){:target="_blank" rel="noopener"} times every day and plays all five adhans with Logitech Media Server and Airplay Speakers at their scheduled time using cron.
+This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan){:target="_blank"} times every day and plays all five adhans with Logitech Media Server and Airplay Speakers at their scheduled time using cron.
 
 ## Prerequisites
 1. Raspberry Pi running Raspbian
