@@ -6,14 +6,14 @@ import sys
 sys.path.insert(0, '/home/pi/adhan/crontab')
 
 from praytimes import PrayTimes
-PT = PrayTimes() 
+PT = PrayTimes()
 
 from crontab import CronTab
 system_cron = CronTab(user='pi')
 
 now = datetime.datetime.now()
-strPlayFajrAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-fajr.mp3 > /dev/null 2>&1'
-strPlayAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1'
+strPlayFajrAzaanMP3Command = 'curl --data "p0=playlist&p1=play&p2=/home/pi/adhan/mp3/Adhan-fajr.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
+strPlayAzaanMP3Command = 'curl --data "p0=playlist&p1=play&p2=/home/pi/adhan/mp3/Adhan-Makkah.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
 strUpdateCommand = 'python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
 strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
 strJobComment = 'rpiAdhanClockJob'
@@ -26,7 +26,7 @@ long = -71.551678
 #Set calculation method, utcOffset and dst here
 #By default system timezone will be used
 #--------------------
-PT.setMethod('ISNA')
+PT.setMethod('Diyanet')
 utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
 
@@ -36,7 +36,7 @@ isDst = time.localtime().tm_isdst
 #---------------------------------
 #Function to add azaan time to cron
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
-  job = objCronTab.new(command=strCommand,comment=strPrayerName)  
+  job = objCronTab.new(command=strCommand,comment=strPrayerName)
   timeArr = strPrayerTime.split(':')
   hour = timeArr[0]
   min = timeArr[1]
@@ -70,12 +70,13 @@ def addClearLogsCronJob (objCronTab, strCommand):
 system_cron.remove_all(comment=strJobComment)
 
 # Calculate prayer times
-times = PT.getTimes((now.year,now.month,now.day), (lat, long), utcOffset, isDst) 
-print times['fajr']
-print times['dhuhr']
-print times['asr']
-print times['maghrib']
-print times['isha']
+times = PT.getTimes((now.year,now.month,now.day), (lat, long), utcOffset, isDst)
+print times['fajr'], 'Fajr'
+print times['sunrise'], 'Sunrise'
+print times['dhuhr'], 'Dhuhr'
+print times['asr'], 'Asr'
+print times['maghrib'], 'Maghrib'
+print times['isha'], 'Isha'
 
 # Add times to crontab
 addAzaanTime('fajr',times['fajr'],system_cron,strPlayFajrAzaanMP3Command)
