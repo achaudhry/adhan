@@ -1,4 +1,4 @@
-# Raspberry Pi Adhan Clock with Logitech Media Server and AirPlay Speakers
+# Raspberry Pi Adhan Times with Logitech Media Server and AirPlay Speakers
 This projects uses a python script which automatically calculates [adhan](https://en.wikipedia.org/wiki/Adhan) times every day and plays all five adhans with Logitech Media Server and Airplay Speakers at their scheduled time using cron.
 
 ## Prerequisites
