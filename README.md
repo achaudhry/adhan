@@ -74,6 +74,7 @@ VOILA! You're done!! Plug in your speakers and enjoy!
 ### Credits
 I have made modifications / bug fixes but I've used the following as starting point:
 * Main Source of this code is by [achaudhry https://github.com/achaudhry/adhan](https://github.com/achaudhry/adhan)
+* prayertimes.py used by https://github.com/cpfair/pebble-qibla-www
 * Python code to calculate adhan times: http://praytimes.org/code/
 * Basic code to turn the above into an adhan clock: http://randomconsultant.blogspot.co.uk/2013/07/turn-your-raspberry-pi-into-azaanprayer.html
 * Cron scheduler: https://pypi.python.org/pypi/python-crontab/
