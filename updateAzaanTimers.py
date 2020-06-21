@@ -12,29 +12,32 @@ from crontab import CronTab
 system_cron = CronTab(user='pi')
 
 now = datetime.datetime.now()
+
+# Set Azaan MP3 source
 strPlayFajrAzaanMP3Command = 'curl --data "p0=playlist&p1=play&p2=/home/pi/adhan/mp3/Adhan-fajr.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
 strPlayAzaanMP3Command = 'curl --data "p0=playlist&p1=play&p2=/home/pi/adhan/mp3/Adhan-Makkah.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
+
 strUpdateCommand = 'python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
 strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
 strJobComment = 'rpiAdhanClockJob'
 
-#Set latitude and longitude here
+# Set latitude and longitude here
 #--------------------
 lat = 42.288788
 long = -71.551678
 
-#Set calculation method, utcOffset and dst here
-#By default system timezone will be used
+# Set calculation method, utcOffset and dst here
+# By default system timezone will be used
 #--------------------
 PT.setMethod('Diyanet')
 utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
 
 
-#HELPER FUNCTIONS
-#---------------------------------
-#---------------------------------
-#Function to add azaan time to cron
+# HELPER FUNCTIONS
+# ---------------------------------
+# ---------------------------------
+# Function to add azaan time to cron
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)
   timeArr = strPrayerTime.split(':')
@@ -62,9 +65,9 @@ def addClearLogsCronJob (objCronTab, strCommand):
   job.set_comment(strJobComment)
   print job
   return
-#---------------------------------
-#---------------------------------
-#HELPER FUNCTIONS END
+# ---------------------------------
+# ---------------------------------
+# HELPER FUNCTIONS END
 
 # Remove existing jobs created by this script
 system_cron.remove_all(comment=strJobComment)
