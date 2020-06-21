@@ -12,6 +12,7 @@ Copyright (C) 2007-2011 PrayTimes.org
 
 Python Code: Saleem Shafi, Hamid Zarrabi-Zadeh
 Original js Code: Hamid Zarrabi-Zadeh
+Logitech Media Server added: Semaf Electronics
 
 License: GNU LGPL v3.0
 
@@ -34,6 +35,9 @@ http://praytimes.org/manual
 
 Calculation Formulas:
 http://praytimes.org/calculation
+
+Adhan Python with Logitech Media Server
+https://github.com/semaf/adhan
 
 
 ------------------------ User Interface -------------------------
