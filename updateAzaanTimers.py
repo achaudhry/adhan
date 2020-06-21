@@ -14,8 +14,8 @@ system_cron = CronTab(user='pi')
 now = datetime.datetime.now()
 
 # Set Azaan MP3 source
-strPlayFajrAzaanMP3Command = 'curl --data "p0=playlist&p1=play&p2=/home/pi/adhan/mp3/Adhan-fajr.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
-strPlayAzaanMP3Command = 'curl --data "p0=playlist&p1=play&p2=/home/pi/adhan/mp3/Adhan-Makkah.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
+strPlayFajrAzaanMP3Command = 'curl --data "p0=mixer&p1=volume&p2=30&p3=playlist&p4=play&p5=/home/pi/adhan/mp3/Adhan-fajr.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
+strPlayAzaanMP3Command = 'curl --data "p0=mixer&p1=volume&p2=50&p3=playlist&p4=play&p5=/home/pi/adhan/mp3/Adhan-Makkah.mp3&player=00:00:00:18:70:c8&start=0" http://localhost:9002/status.html'
 
 strUpdateCommand = 'python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
 strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
