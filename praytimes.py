@@ -86,7 +86,7 @@ class PrayTimes():
         'Diyanet': {
             'name': 'Diyanet Isleri Baskanligi',
             'params': { 'fajr': 18, 'isha': 17 },
-            'offsets': { 'fajr': 9, 'sunrise': -6, 'dhuhr': 5, 'asr': 3, 'maghrib': 5, 'isha': -14 } },
+            'offsets': { 'fajr': 45, 'sunrise': -6, 'dhuhr': 5, 'asr': 3, 'maghrib': 5, 'isha': -45 } },
         'Indonesia': {
             'name': 'KEMENAG',
             'params': { 'fajr': 20, 'isha': 18 },
@@ -123,7 +123,7 @@ class PrayTimes():
 
     # do not change anything here; use adjust method instead
     settings = {
-        "imsak"    : '10 min',
+        "imsak"    : '0 min',
         "dhuhr"    : '0 min',
         "asr"      : 'Standard',
         "highLats" : 'AngleBased'
