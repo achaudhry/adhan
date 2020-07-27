@@ -7,7 +7,6 @@ from os.path import dirname, abspath, join as pathjoin
 import argparse
 
 root_dir = dirname(abspath(__file__))
-print("Running from {}".format(root_dir))
 sys.path.insert(0, pathjoin(root_dir, 'crontab'))
 
 from praytimes import PrayTimes
