@@ -4,6 +4,7 @@ import datetime
 import time
 import sys
 from os.path import dirname, abspath, join as pathjoin
+import argparse
 
 root_dir = dirname(abspath(__file__))
 print("Running from {}".format(root_dir))
@@ -22,23 +23,42 @@ strUpdateCommand = 'python {}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(
 strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
 strJobComment = 'rpiAdhanClockJob'
 
-#Set latitude and longitude here
-#--------------------
-lat = 42.288788
-long = -71.551678
-
-#Set calculation method, utcOffset and dst here
-#By default system timezone will be used
-#--------------------
-PT.setMethod('ISNA')
-utcOffset = -(time.timezone/3600)
-isDst = time.localtime().tm_isdst
-
-
 #HELPER FUNCTIONS
 #---------------------------------
 #---------------------------------
 #Function to add azaan time to cron
+def parseArgs():
+    parser = argparse.ArgumentParser(description='Calculate prayer times and install cronjobs to play Adhan')
+    parser.add_argument('--lat', type=float, dest='lat',
+                        help='Latitude of the location, for example 30.345621')
+    parser.add_argument('--lng', type=float, dest='lng',
+                        help='Longitude of the location, for example 60.512126')
+    parser.add_argument('--method', choices=['MWL', 'ISNA', 'Egypt', 'Makkah', 'Karachi', 'Tehran', 'Jafari'],
+                        dest='method',
+                        help='Method of calculation')
+    return parser
+
+def mergeArgs(args):
+    file_path = pathjoin(root_dir, '.settings')
+    # load values
+    lat = lng = method = None
+    try:
+        with open(file_path, 'rt') as f:
+            lat, lng, method = f.readlines()[0].split(',')
+    except:
+        print('No .settings file found')
+    # merge args
+    if args.lat:
+        lat = args.lat
+    if args.lng:
+        lng = args.lng
+    if args.method:
+        method = args.method
+    # save values
+    with open(file_path, 'wt') as f:
+        f.write('{},{},{}'.format(lat or '', lng or '', method or ''))
+    return lat or None, lng or None, method or None
+
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)  
   timeArr = strPrayerTime.split(':')
@@ -69,6 +89,24 @@ def addClearLogsCronJob (objCronTab, strCommand):
 #---------------------------------
 #---------------------------------
 #HELPER FUNCTIONS END
+
+#Parse arguments
+parser = parseArgs()
+args = parser.parse_args()
+#Merge args with saved values if any
+lat, lng, method = mergeArgs(args)
+print(lat, lng, method)
+#Complain if any value is missing
+if not lat or not lng or not method:
+    parser.print_usage()
+    sys.exit(1)
+
+#Set calculation method, utcOffset and dst here
+#By default system timezone will be used
+#--------------------
+PT.setMethod(method)
+utcOffset = -(time.timezone/3600)
+isDst = time.localtime().tm_isdst
 
 # Remove existing jobs created by this script
 system_cron.remove_all(comment=strJobComment)

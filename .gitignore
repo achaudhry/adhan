@@ -2,3 +2,4 @@
 *.log
 *.pyc
 adhan.log
+.settings
