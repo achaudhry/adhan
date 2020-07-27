@@ -3,7 +3,11 @@
 import datetime
 import time
 import sys
-sys.path.insert(0, '/home/pi/adhan/crontab')
+from os.path import dirname, abspath, join as pathjoin
+
+root_dir = dirname(abspath(__file__))
+print("Running from {}".format(root_dir))
+sys.path.insert(0, pathjoin(root_dir, 'crontab'))
 
 from praytimes import PrayTimes
 PT = PrayTimes() 
@@ -12,10 +16,10 @@ from crontab import CronTab
 system_cron = CronTab(user='pi')
 
 now = datetime.datetime.now()
-strPlayFajrAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-fajr.mp3 > /dev/null 2>&1'
-strPlayAzaanMP3Command = 'omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1'
-strUpdateCommand = 'python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1'
-strClearLogsCommand = 'truncate -s 0 /home/pi/adhan/adhan.log 2>&1'
+strPlayFajrAzaanMP3Command = 'omxplayer --vol 1200 -o local {}/Adhan-fajr.mp3 > /dev/null 2>&1'.format(root_dir)
+strPlayAzaanMP3Command = 'omxplayer --vol 1800 -o local {}/Adhan-Madinah.mp3 > /dev/null 2>&1'.format(root_dir)
+strUpdateCommand = 'python {}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
+strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
 strJobComment = 'rpiAdhanClockJob'
 
 #Set latitude and longitude here
