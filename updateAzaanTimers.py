@@ -47,7 +47,7 @@ def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job.minute.on(int(min))
   job.hour.on(int(hour))
   job.set_comment(strJobComment)
-  print job
+  print(job)
   return
 
 def addUpdateCronJob (objCronTab, strCommand):
@@ -55,7 +55,7 @@ def addUpdateCronJob (objCronTab, strCommand):
   job.minute.on(15)
   job.hour.on(3)
   job.set_comment(strJobComment)
-  print job
+  print(job)
   return
 
 def addClearLogsCronJob (objCronTab, strCommand):
@@ -64,7 +64,7 @@ def addClearLogsCronJob (objCronTab, strCommand):
   job.minute.on(0)
   job.hour.on(0)
   job.set_comment(strJobComment)
-  print job
+  print(job)
   return
 #---------------------------------
 #---------------------------------
@@ -74,12 +74,12 @@ def addClearLogsCronJob (objCronTab, strCommand):
 system_cron.remove_all(comment=strJobComment)
 
 # Calculate prayer times
-times = PT.getTimes((now.year,now.month,now.day), (lat, long), utcOffset, isDst) 
-print times['fajr']
-print times['dhuhr']
-print times['asr']
-print times['maghrib']
-print times['isha']
+times = PT.getTimes((now.year,now.month,now.day), (lat, lng), utcOffset, isDst) 
+print(times['fajr'])
+print(times['dhuhr'])
+print(times['asr'])
+print(times['maghrib'])
+print(times['isha'])
 
 # Add times to crontab
 addAzaanTime('fajr',times['fajr'],system_cron,strPlayFajrAzaanMP3Command)
@@ -95,4 +95,4 @@ addUpdateCronJob(system_cron, strUpdateCommand)
 addClearLogsCronJob(system_cron,strClearLogsCommand)
 
 system_cron.write_to_user(user='pi')
-print 'Script execution finished at: ' + str(now)
+print('Script execution finished at: ' + str(now))
