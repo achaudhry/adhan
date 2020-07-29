@@ -28,7 +28,7 @@ Replace the arguments above with your location information and calculation metho
 
 If everythig worked, your output will look something like this:
 ```
-20 60 Egypt
+20 60 Egypt 0 0
 05:51
 11:52
 14:11
@@ -51,6 +51,10 @@ Note that for later runs you do not have to supply any arguments as they are sav
 VOILA! You're done!! Plug in your speakers and enjoy!
 
 Please see the [manual](http://praytimes.org/manual) for advanced configuration instructions. 
+
+There are 2 additional arguments that are optional, you can set them in the first run or
+further runs: `--fajr-azaan-volume` and `azaan-volume`. You can control the volume of the Azaan
+by supplying numbers in millibels. To get more information on how to select the values, run the command with `-h`.
 
 ## Tips:
 1. You can see your currently scheduled jobs by running `crontab -l`
