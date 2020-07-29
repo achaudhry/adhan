@@ -19,7 +19,7 @@ This projects uses a python script which automatically calculates [adhan](https:
 Run this command:
 
 ```bash
-$ python /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>`.
+$ python /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>
 ```
 
 Replace the arguments above with your location information and calculation method:
@@ -61,4 +61,3 @@ I have made modifications / bug fixes but I've used the following as starting po
 * Python code to calculate adhan times: http://praytimes.org/code/ 
 * Basic code to turn the above into an adhan clock: http://randomconsultant.blogspot.co.uk/2013/07/turn-your-raspberry-pi-into-azaanprayer.html
 * Cron scheduler: https://pypi.python.org/pypi/python-crontab/ 
-
