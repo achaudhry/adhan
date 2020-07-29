@@ -15,13 +15,6 @@ PT = PrayTimes()
 from crontab import CronTab
 system_cron = CronTab(user='pi')
 
-now = datetime.datetime.now()
-strPlayFajrAzaanMP3Command = 'omxplayer --vol 1200 -o local {}/Adhan-fajr.mp3 > /dev/null 2>&1'.format(root_dir)
-strPlayAzaanMP3Command = 'omxplayer --vol 1800 -o local {}/Adhan-Madinah.mp3 > /dev/null 2>&1'.format(root_dir)
-strUpdateCommand = 'python {}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
-strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
-strJobComment = 'rpiAdhanClockJob'
-
 #HELPER FUNCTIONS
 #---------------------------------
 #---------------------------------
@@ -35,28 +28,45 @@ def parseArgs():
     parser.add_argument('--method', choices=['MWL', 'ISNA', 'Egypt', 'Makkah', 'Karachi', 'Tehran', 'Jafari'],
                         dest='method',
                         help='Method of calculation')
+    parser.add_argument('--fajr-azaan-volume', type=int, dest='fajr_azaan_vol',
+                        help='Volume for fajr azaan in millibels, 1500 is loud and -30000 is quiet (default 0)')
+    parser.add_argument('--azaan-volume', type=int, dest='azaan_vol',
+                        help='Volume for azaan (other than fajr) in millibels, 1500 is loud and -30000 is quiet (default 0)')
     return parser
 
 def mergeArgs(args):
     file_path = pathjoin(root_dir, '.settings')
     # load values
-    lat = lng = method = None
+    lat = lng = method = fajr_azaan_vol = azaan_vol = None
     try:
         with open(file_path, 'rt') as f:
-            lat, lng, method = f.readlines()[0].split(',')
+            lat, lng, method, fajr_azaan_vol, azaan_vol = f.readlines()[0].split(',')
     except:
         print('No .settings file found')
     # merge args
     if args.lat:
         lat = args.lat
+    if lat:
+        lat = float(lat)
     if args.lng:
         lng = args.lng
+    if lng:
+        lng = float(lng)
     if args.method:
         method = args.method
+    if args.fajr_azaan_vol:
+        fajr_azaan_vol = args.fajr_azaan_vol
+    if fajr_azaan_vol:
+        fajr_azaan_vol = int(fajr_azaan_vol)
+    if args.azaan_vol:
+        azaan_vol = args.azaan_vol
+    if azaan_vol:
+        azaan_vol = int(azaan_vol)
     # save values
     with open(file_path, 'wt') as f:
-        f.write('{},{},{}'.format(lat or '', lng or '', method or ''))
-    return float(lat) or None, float(lng) or None, method or None
+        f.write('{},{},{},{},{}'.format(lat or '', lng or '', method or '',
+                fajr_azaan_vol or 0, azaan_vol or 0))
+    return lat or None, lng or None, method or None, fajr_azaan_vol or 0, azaan_vol or 0 
 
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)  
@@ -93,9 +103,9 @@ def addClearLogsCronJob (objCronTab, strCommand):
 parser = parseArgs()
 args = parser.parse_args()
 #Merge args with saved values if any
-lat, lng, method = mergeArgs(args)
-print(lat, lng, method)
-#Complain if any value is missing
+lat, lng, method, fajr_azaan_vol, azaan_vol = mergeArgs(args)
+print(lat, lng, method, fajr_azaan_vol, azaan_vol)
+#Complain if any mandatory value is missing
 if not lat or not lng or not method:
     parser.print_usage()
     sys.exit(1)
@@ -106,6 +116,13 @@ if not lat or not lng or not method:
 PT.setMethod(method)
 utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
+
+now = datetime.datetime.now()
+strPlayFajrAzaanMP3Command = 'omxplayer --vol {} -o local {}/Adhan-fajr.mp3 > /dev/null 2>&1'.format(fajr_azaan_vol, root_dir)
+strPlayAzaanMP3Command = 'omxplayer --vol {} -o local {}/Adhan-Madinah.mp3 > /dev/null 2>&1'.format(azaan_vol, root_dir)
+strUpdateCommand = 'python {}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
+strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
+strJobComment = 'rpiAdhanClockJob'
 
 # Remove existing jobs created by this script
 system_cron.remove_all(comment=strJobComment)
