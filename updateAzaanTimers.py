@@ -56,7 +56,7 @@ def mergeArgs(args):
     # save values
     with open(file_path, 'wt') as f:
         f.write('{},{},{}'.format(lat or '', lng or '', method or ''))
-    return lat or None, lng or None, method or None
+    return float(lat) or None, float(lng) or None, method or None
 
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)  
