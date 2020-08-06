@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import datetime
 import time
@@ -118,9 +118,9 @@ utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
 
 now = datetime.datetime.now()
-strPlayFajrAzaanMP3Command = 'omxplayer --vol {} -o local {}/Adhan-fajr.mp3 > /dev/null 2>&1'.format(fajr_azaan_vol, root_dir)
-strPlayAzaanMP3Command = 'omxplayer --vol {} -o local {}/Adhan-Madinah.mp3 > /dev/null 2>&1'.format(azaan_vol, root_dir)
-strUpdateCommand = 'python {}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
+strPlayFajrAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-fajr.mp3 {}'.format(root_dir, root_dir, fajr_azaan_vol)
+strPlayAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-Madinah.mp3 {}'.format(root_dir, root_dir, azaan_vol)
+strUpdateCommand = '{}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
 strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
 strJobComment = 'rpiAdhanClockJob'
 
