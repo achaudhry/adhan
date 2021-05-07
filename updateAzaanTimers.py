@@ -47,44 +47,45 @@ def getConfig():
 
     lat = lon = method = fajr_azaan_vol = default_azaan_vol = surahBaqarah = surahVolume = None
 
-    # Get mandatory data
+    # Get mandatory data. First check args, if not present check settings.ini
     try:
-        lat = float(config['DEFAULT']['lat'])
-        lon = float(config['DEFAULT']['lon'])
-        method = config['DEFAULT']['method']
-    except KeyError:
-        try:
-            if args.lat:
-                lat = float(args.lat)
-                config['DEFAULT']['lat'] = str(lat)
-            if args.lon:
-                lon = float(args.lon)
-                config['DEFAULT']['lon'] = str(lon)
-            if args.method:
-                method = args.method
-                config['DEFAULT']['method'] = method
-        except Exception as e:
-            print("Incorrect value or values not provided")
-            lat = lon = method = None
+        if args.lat:
+            lat = float(args.lat)
+            config['DEFAULT']['lat'] = str(lat)
+        else:
+            lat = float(config['DEFAULT']['lat'])
+        
+        if args.lon:
+            lon = float(args.lon)
+            config['DEFAULT']['lon'] = str(lon)
+        else:
+            lon = float(config['DEFAULT']['lon'])
+
+        if args.method:
+            method = args.method
+            config['DEFAULT']['method'] = method
+        else:
+            method = config['DEFAULT']['method']
+    except:
+        print("Incorrect value or values not provided")
+        lat = lon = method = None
+
 
     # Get optional data
     try:
-        default_azaan_vol = int(config['VOLUME']['defaultAzaanVolume'])
-        fajr_azaan_vol = int(config['VOLUME']['fajrAzaanVolume'])
-    except KeyError as e:
-        try:
-            if args.default_azaan_vol:
-                default_azaan_vol = int(args.default_azaan_vol)
-            else:
-                default_azaan_vol = 0
+        if args.default_azaan_vol:
+            default_azaan_vol = int(args.default_azaan_vol)
+        else:
+            default_azaan_vol = int(config['VOLUME']['defaultAzaanVolume'])
 
-            if args.fajr_azaan_vol:
-                fajr_azaan_vol = int(args.fajr_azaan_vol)
-            else:
-                fajr_azaan_vol = 0
-        except:
-            default_azaan_vol = 0
-            fajr_azaan_vol = 0
+        if args.fajr_azaan_vol:
+            fajr_azaan_vol = int(args.fajr_azaan_vol)
+        else:
+            fajr_azaan_vol = int(config['VOLUME']['fajrAzaanVolume'])
+    except:
+        default_azaan_vol = 0
+        fajr_azaan_vol = 0
+
         
     config["VOLUME"] = {
         "defaultAzaanVolume": str(default_azaan_vol), 
@@ -96,12 +97,13 @@ def getConfig():
     try:
         surahBaqarah = bool(config['FRIDAY']['playSurahBaqarah'])
         surahVolume = int(config['FRIDAY']['surahVolume'])
-    except KeyError as e:
-        print(e)
+    except:
         surahBaqarah = False
         surahVolume = 0
         config["FRIDAY"] = {"playSurahBaqarah": str(surahBaqarah), "surahVolume": str(surahVolume)}
     
+
+    # If any of the mandatory values not provided or configures in settings.ini, exit and show usage
     if not lat or not lon or not method:
         print("No values provided, please provide values as per below usage")
         parser.print_usage()
@@ -178,7 +180,7 @@ times = PT.getTimes((now.year,now.month,now.day), (lat, lon), utcOffset, isDst)
 print("---------------------------------")
 print("Co-ordinates provided")
 print("---------------------------------")
-print(f"Latitude: {lat}, Longitude: {lon}, Method: {method}")
+print(f"Latitude:   {lat} \nLongitude:  {lon} \nMethod:     {method}")
 print("---------------------------------")
 print()
 print("---------------------------------")
