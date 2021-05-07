@@ -8,12 +8,15 @@ This projects uses a python script which automatically calculates [adhan](https:
 2. Speakers
 3. Auxiliary audio cable
 
+## Caution when using Bluetooth Speakers
+1. Raspberry Pi's bluetooth drivers has known issues that result in intermittent disconnections. Using a wired speaker is recommended
+
 ## Instructions
 1. Install git: Go to raspberry pi terminal (command line interface) and install `git`
   * `$ sudo apt-get install git`
 2. Clone repo: Clone this repository on your raspberry pi in your `home` directory. (Tip: run `$ cd ~` to go to your home directory)
   * `$ git clone <get repo clone url from github and put it here>`
-  * After doing that you should see an `adhan` direcotry in your `home` directory. 
+  * After doing that you should see an `adhan` directory in your `home` directory. 
 
 ## Run it for the first time
 Run this command:
@@ -28,25 +31,47 @@ Replace the arguments above with your location information and calculation metho
 
 If everythig worked, your output will look something like this:
 ```
-20 60 Egypt 0 0
-05:51
-11:52
-14:11
-16:30
-17:53
-51 5 * * * omxplayer -o local /home/pi/adhan/Adhan-fajr.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
-52 11 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
-11 14 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
-30 16 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
-53 17 * * * omxplayer -o local /home/pi/adhan/Adhan-Makkah.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
-0 1 * * * python /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
-@monthly truncate -s 0 /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
-Script execution finished at: 2017-01-06 21:22:31.512667
+---------------------------------
+Co-ordinates provided
+---------------------------------
+Latitude: 28.479250699999998, Longitude: 77.535747, Method: Karachi
+---------------------------------
+
+---------------------------------
+Prayer Times
+---------------------------------
+Fajr:    04:08 hrs
+Dhuhr:   12:16 hrs
+Asr:     15:50 hrs
+Maghrib: 18:59 hrs
+Isha:    20:25 hrs
+---------------------------------
+
+---------------------------------
+Crob jobs scheduled
+---------------------------------
+8 4 * * * omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/Adhan-fajr.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+16 12 * * * omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/Adhan-Makkah1.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+50 15 * * * omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/Adhan-Makkah1.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+59 18 * * * omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/Adhan-Makkah1.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+25 20 * * * omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/Adhan-Makkah1.mp3 > /dev/null 2>&1 # rpiAdhanClockJob
+0 8 * * 5 omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/002-surah-baqarah-mishary.mp3 > /dev/null 2>&1 # Surah Baqarah
+---------------------------------
+
 ```
 
 If you look at the last few lines, you'll see that 5 adhan times have been scheduled. Then there is another line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.
 
-Note that for later runs you do not have to supply any arguments as they are saved in `/home/pi/adhan/.settings`.
+
+Note that for later runs you do not have to supply any arguments as they are saved in `/home/pi/adhan/settings.ini`.
+
+## Play Surah Baqrah on Fridays
+If you notice the output above, it has a line item with comment "# Surah Baqarah". This is disabled by default, but can be turned on by editing settings.ini and updating "FRIDAY" section
+```
+[FRIDAY]
+playsurahbaqarah = True
+surahvolume = 0
+```
 
 VOILA! You're done!! Plug in your speakers and enjoy!
 
