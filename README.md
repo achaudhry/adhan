@@ -22,7 +22,11 @@ This projects uses a python script which automatically calculates [adhan](https:
 Run this command:
 
 ```bash
+<<<<<<< HEAD
 $ python3 /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>
+=======
+$ /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>
+>>>>>>> b6d9738f886eaea16e056449693b338c441ea002
 ```
 
 Replace the arguments above with your location information and calculation method:
@@ -31,6 +35,7 @@ Replace the arguments above with your location information and calculation metho
 
 If everythig worked, your output will look something like this:
 ```
+<<<<<<< HEAD
 ---------------------------------
 Co-ordinates provided
 ---------------------------------
@@ -58,6 +63,22 @@ Crob jobs scheduled
 0 8 * * 5 omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/002-surah-baqarah-mishary.mp3 > /dev/null 2>&1 # Surah Baqarah
 ---------------------------------
 
+=======
+20 60 Egypt 0 0
+05:51
+11:52
+14:11
+16:30
+17:53
+51 5 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-fajr.mp3 0 # rpiAdhanClockJob
+52 11 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
+11 14 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
+30 16 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
+53 17 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
+0 1 * * * /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
+@monthly truncate -s 0 /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
+Script execution finished at: 2017-01-06 21:22:31.512667
+>>>>>>> b6d9738f886eaea16e056449693b338c441ea002
 ```
 
 If you look at the last few lines, you'll see that 5 adhan times have been scheduled. Then there is another line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.
@@ -81,11 +102,47 @@ There are 2 additional arguments that are optional, you can set them in the firs
 further runs: `--fajr-azaan-volume` and `azaan-volume`. You can control the volume of the Azaan
 by supplying numbers in millibels. To get more information on how to select the values, run the command with `-h`.
 
+## Configuring custom actions before/after adhan
+
+Sometimes it is needed to run custom commands either before, after or before
+and after playing adhan. For example, if you have
+[Quran playing continuously](https://github.com/LintangWisesa/RPi_QuranSpeaker),
+you would want to pause and resume the playback. Another example, is to set your
+status on a social network, or a calendar, to block/unblock the Internet
+using [pi.hole rules](https://docs.pi-hole.net/), ... etc.
+
+You can easily do this by adding scripts in the following directories:
+- `before-hooks.d`: Scripts to run before adhan playback
+- `after-hooks.d`: Scripts to run after adhan playback
+
+### Example:
+To pause/resume Quran playback if using the
+[RPi_QuranSpeaker](https://github.com/LintangWisesa/RPi_QuranSpeaker) project, place
+the following in 2 new files under the above 2 directories:
+
+```bash
+# before-hooks.d/01-pause-quran-speaker.sh
+#!/usr/bin/env bash
+/home/pi/RPi_QuranSpeaker/pauser.py pause
+```
+
+```bash
+# after-hooks.d/01-resume-quran-speaker.sh
+#!/usr/bin/env bash
+/home/pi/RPi_QuranSpeaker/pauser.py resume
+```
+
+Do not forget to make the scripts executable:
+```bash
+chmod u+x ./before-hooks.d/01-pause-quran-speaker.sh
+chmod u+x ./after-hooks.d/01-resume-quran-speaker.sh
+```
+
 ## Tips:
 1. You can see your currently scheduled jobs by running `crontab -l`
 2. The output of the job that runs at 1am every night is being captured in `/home/pi/adhan/adhan.log`. This way you can keep track of all successful runs and any potential issues. This file will be truncated at midnight on the forst day of each month. To view the output type `$ cat /home/pi/adhan/adhan.log`
 
-### Credits
+## Credits
 I have made modifications / bug fixes but I've used the following as starting point:
 * Python code to calculate adhan times: http://praytimes.org/code/ 
 * Basic code to turn the above into an adhan clock: http://randomconsultant.blogspot.co.uk/2013/07/turn-your-raspberry-pi-into-azaanprayer.html

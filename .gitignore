@@ -4,3 +4,6 @@
 adhan.log
 settings.ini
 __pycache__
+.settings
+before-hooks.d/*.sh
+after-hooks.d/*.sh
