@@ -22,11 +22,7 @@ This projects uses a python script which automatically calculates [adhan](https:
 Run this command:
 
 ```bash
-<<<<<<< HEAD
-$ python3 /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>
-=======
-$ /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>
->>>>>>> b6d9738f886eaea16e056449693b338c441ea002
+$ python3 /home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lon <YOUR_LNG> --method <METHOD>
 ```
 
 Replace the arguments above with your location information and calculation method:
@@ -35,7 +31,6 @@ Replace the arguments above with your location information and calculation metho
 
 If everythig worked, your output will look something like this:
 ```
-<<<<<<< HEAD
 ---------------------------------
 Co-ordinates provided
 ---------------------------------
@@ -63,22 +58,6 @@ Crob jobs scheduled
 0 8 * * 5 omxplayer --vol 0 -o local /home/pi/Desktop/Github/adhan/media/002-surah-baqarah-mishary.mp3 > /dev/null 2>&1 # Surah Baqarah
 ---------------------------------
 
-=======
-20 60 Egypt 0 0
-05:51
-11:52
-14:11
-16:30
-17:53
-51 5 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-fajr.mp3 0 # rpiAdhanClockJob
-52 11 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
-11 14 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
-30 16 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
-53 17 * * * /home/pi/adhan/playAzaan.sh /home/pi/adhan/Adhan-Madinah.mp3 0 # rpiAdhanClockJob
-0 1 * * * /home/pi/adhan/updateAzaanTimers.py >> /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
-@monthly truncate -s 0 /home/pi/adhan/adhan.log 2>&1 # rpiAdhanClockJob
-Script execution finished at: 2017-01-06 21:22:31.512667
->>>>>>> b6d9738f886eaea16e056449693b338c441ea002
 ```
 
 If you look at the last few lines, you'll see that 5 adhan times have been scheduled. Then there is another line at the end which makes sure that at 1am every day the same script will run and calculate adhan times for that day. And lastly, there is a line to clear logs on a monthly basis so that your log file doesn't grow too big.

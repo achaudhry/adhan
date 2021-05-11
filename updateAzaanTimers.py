@@ -7,6 +7,7 @@ from os.path import dirname, abspath, join as pathjoin
 import argparse
 from configparser import ConfigParser
 
+
 root_dir = dirname(abspath(__file__))
 sys.path.insert(0, pathjoin(root_dir, 'crontab'))
 from modules.praytimes import PrayTimes
@@ -165,20 +166,12 @@ utcOffset = -(time.timezone/float(3600))
 isDst = time.localtime().tm_isdst
 
 now = datetime.datetime.now()
-<<<<<<< HEAD
 strPlayFajrAzaanMP3Command = f"omxplayer --vol {fajr_azaan_vol} -o local {root_dir}/media/Adhan-fajr.mp3 > /dev/null 2>&1"
 strPlayAzaanMP3Command = f"omxplayer --vol {default_azaan_vol} -o local {root_dir}/media/Adhan-Makkah1.mp3 > /dev/null 2>&1"
 strUpdateCommand = f"python {root_dir}/updateAzaanTimers.py >> {root_dir}/adhan.log 2>&1"
 strClearLogsCommand = f"truncate -s 0 {root_dir}/adhan.log 2>&1"
 strJobComment = "rpiAdhanClockJob"
 strSurahBaqarahMP3Command = f"omxplayer --vol {surahVolume} -o local {root_dir}/media/002-surah-baqarah-mishary.mp3 > /dev/null 2>&1"
-=======
-strPlayFajrAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-fajr.mp3 {}'.format(root_dir, root_dir, fajr_azaan_vol)
-strPlayAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-Madinah.mp3 {}'.format(root_dir, root_dir, azaan_vol)
-strUpdateCommand = '{}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
-strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
-strJobComment = 'rpiAdhanClockJob'
->>>>>>> b6d9738f886eaea16e056449693b338c441ea002
 
 # Remove existing jobs created by this script
 system_cron.remove_all(comment=strJobComment)
