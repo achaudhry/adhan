@@ -13,9 +13,13 @@ This projects uses a python script which automatically calculates [adhan](https:
 
 ## Instructions
 1. Install git: Go to raspberry pi terminal (command line interface) and install `git`
-  * `$ sudo apt-get install git`
+  ```bash
+  sudo apt-get install git
+  ```
 2. Clone repo: Clone this repository on your raspberry pi in your `home` directory. (Tip: run `$ cd ~` to go to your home directory)
-  * `$ git clone <get repo clone url from github and put it here>`
+  ```bash
+  $ git clone <get repo clone url from github and put it here>
+  ```
   * After doing that you should see an `adhan` directory in your `home` directory. 
 
 ## Run it for the first time
