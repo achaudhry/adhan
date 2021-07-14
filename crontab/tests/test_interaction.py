@@ -70,10 +70,8 @@ class InteractionTestCase(unittest.TestCase):
     def test_01_presevation(self):
         """All Entries Re-Rendered Correctly"""
         results = RESULT_TAB.split('\n')
-        line_no = 0
-        for line in self.crontab.lines:
+        for line_no, line in enumerate(self.crontab.lines):
             self.assertEqual(str(line), results[line_no])
-            line_no += 1
 
     def test_02_access(self):
         """All Entries Are Accessable"""

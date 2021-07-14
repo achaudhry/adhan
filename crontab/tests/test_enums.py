@@ -63,10 +63,8 @@ class EnumTestCase(unittest.TestCase):
         """All Entries Re-Rendered Correctly"""
         self.crontab.write()
         results = RESULT_TAB.split('\n')
-        line_no = 0
-        for line in self.crontab.intab.split('\n'):
+        for line_no, line in enumerate(self.crontab.intab.split('\n')):
             self.assertEqual(str(line), results[line_no])
-            line_no += 1
 
     def test_02_simple_enum(self):
         """Simple Enumerations"""
