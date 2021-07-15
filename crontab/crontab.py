@@ -226,9 +226,8 @@ class CronTab(object):
         """Returns the user option for the crontab commandline"""
         # Fedora and Mac require the current user to not specify
         # But Ubuntu/Debian doesn't care. Be careful here.
-        if self._user and self._user is not True:
-            if self._user != current_user():
-                return {'u': self._user}
+        if self._user and self._user is not True and self._user != current_user():
+            return {'u': self._user}
         return {}
 
     def read(self, filename=None):
@@ -248,9 +247,7 @@ class CronTab(object):
                 lines = fhl.readlines()
         elif self.user:
             (out, err) = open_pipe(CRONCMD, l='', **self.user_opt).communicate()
-            if err and 'no crontab for' in str(err):
-                pass
-            elif err:
+            if err and 'no crontab for' not in str(err):
                 raise IOError("Read crontab %s: %s" % (self.user, err))
             lines = out.decode('utf-8').split("\n")
         for line in lines:
@@ -265,11 +262,10 @@ class CronTab(object):
             self.crons.append(cron)
             self.lines.append(cron)
             return cron
-        if '=' in line:
-            if ' ' not in line or line.index('=') < line.index(' '):
-                (name, value) = line.split('=', 1)
-                self.env[name.strip()] = value.strip()
-                return None
+        if '=' in line and (' ' not in line or line.index('=') < line.index(' ')):
+            (name, value) = line.split('=', 1)
+            self.env[name.strip()] = value.strip()
+            return None
         self.lines.append(line.replace('\n', ''))
 
     def write(self, filename=None, user=None):
@@ -331,8 +327,7 @@ class CronTab(object):
             now = datetime.now()
             if 'warp' in kwargs:
                 now += timedelta(seconds=count * 60)
-            for value in self.run_pending(now=now):
-                yield value
+            yield from self.run_pending(now=now)
 
     def render(self):
         """Render this crontab as it would be in the crontab."""
@@ -410,10 +405,7 @@ class CronTab(object):
 
     def remove(self, *items):
         """Remove a selected cron from the crontab."""
-        result = 0
-        for item in items:
-            result += self._remove(item)
-        return result
+        return sum(self._remove(item) for item in items)
 
     def _remove(self, item):
         """Internal removal of an item"""
@@ -436,8 +428,7 @@ class CronTab(object):
 
     def __iter__(self):
         """Return generator so we can track jobs after removal"""
-        for job in list(self.crons.__iter__()):
-            yield job
+        yield from list(self.crons.__iter__())
 
     def __getitem__(self, i):
         return self.crons[i]
@@ -834,7 +825,7 @@ class CronSlices(list):
 
     def clean_render(self):
         """Return just numbered parts of this crontab"""
-        return ' '.join([unicode(s) for s in self])
+        return ' '.join(unicode(s) for s in self)
 
     def render(self):
         "Return just the first part of a cron job (the numbers or special)"
@@ -1011,8 +1002,7 @@ class CronSlice(object):
                     ret[bit] = 1
             else:
                 ret[int(part)] = 1
-        for val in ret:
-            yield val
+        yield from ret
 
     def __len__(self):
         """Returns the number of times this slice happens in it's range"""
@@ -1101,7 +1091,7 @@ class CronRange(object):
             self.all()
         elif isinstance(vrange[0], basestring):
             self.parse(vrange[0])
-        elif isinstance(vrange[0], int) or isinstance(vrange[0], CronValue):
+        elif isinstance(vrange[0], (int, CronValue)):
             if len(vrange) == 2:
                 (self.vfrom, self.vto) = vrange
             else:
@@ -1151,7 +1141,7 @@ class CronRange(object):
         if self.seq != 1:
             value += "/%d" % self.seq
         if value != '*' and SYSTEMV:
-            value = ','.join([str(val) for val in self.range()])
+            value = ','.join(str(val) for val in self.range())
         return value
 
     def range(self):
