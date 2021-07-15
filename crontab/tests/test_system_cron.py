@@ -121,7 +121,7 @@ JAR=bar
 
     def test_09_resaving(self):
         """Cycle rendering to show no changes"""
-        for i in range(10):
+        for _ in range(10):
             self.crontab = CronTab(tab=str(self.crontab))
 
         self.assertEqual(str(self.crontab), INITAL_TAB.lstrip())
