@@ -128,8 +128,8 @@ strPlayFajrAzaanMP3Command = "curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00
 
 
 strVolumeAdhan = "curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00\",[\"mixer\",\"volume\",\"60\"]],\"method\":\"slim.request\"}' http://localhost:9000/jsonrpc.js"
-strPlayAzaanMP3Command = "curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00\",[\"playlist\",\"play\",\"/home/pi/adhan/mp3/Adhan-Makkah.mp3\"]],\"method\":\"slim.request\"}' http://localhost:9000/jsonrpc.js"
-
+#strPlayAzaanMP3Command = "curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00\",[\"playlist\",\"play\",\"/home/pi/adhan/mp3/Adhan-Makkah.mp3\"]],\"method\":\"slim.request\"}' http://localhost:9000/jsonrpc.js"
+strPlayAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-Madinah.mp3 {}'.format(root_dir, root_dir, azaan_vol)
 
 strUpdateCommand = '{}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
 strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
