@@ -16,8 +16,7 @@ done
 
 # Play Azaan audio
 #omxplayer --vol $vol -o local $audio_path
-#curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00\",[\"mixer\",\"volume\",$vol]],\"method\":\"slim.request\"}' http://localhost:9000/jsonrpc.js
-#curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00\",[\"playlist\",\"play\",\"$audio_path\"]],\"method\":\"slim.request\"}' http://localhost:9000/jsonrpc.js
+curl -d '{\"id\":0,\"params\":[\"aa:aa:00:00:00:00\",[\"mixer\",\"volume\",$vol]],\"method\":\"slim.request\"}' http://localhost:9000/jsonrpc.js
 curl -d '{"id":0,"params":["aa:aa:00:00:00:00",["playlist","play","$audio_path"]],"method":"slim.request"}' http://localhost:9000/jsonrpc.js
 
 
