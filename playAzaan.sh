@@ -15,7 +15,7 @@ for hook in $root_dir/before-hooks.d/*; do
 done
 
 # Play Azaan audio
-omxplayer --vol $vol -o local $audio_path
+mpg321 -g $vol $audio_path
 
 # Run after hooks
 for hook in $root_dir/after-hooks.d/*; do

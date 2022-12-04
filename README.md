@@ -7,6 +7,7 @@ This projects uses a python script which automatically calculates [adhan](https:
   2. Also, if you haven't worked with raspberry pi before, I would highly recommend using [these](https://www.raspberrypi.org/documentation/installation/noobs.md) instructions to get it up and running: https://www.raspberrypi.org/documentation/installation/noobs.md
 2. Speakers
 3. Auxiliary audio cable
+4. sudo apt install mpg321 ( the replacement of the old omxplayer tool)
 
 ## Instructions
 1. Install git: Go to raspberry pi terminal (command line interface) and install `git`
