@@ -50,6 +50,61 @@ Note that for later runs you do not have to supply any arguments as they are sav
 
 VOILA! You're done!! Plug in your speakers and enjoy!
 
+## Alternative: Using Mawaqit Prayer Times
+
+Instead of calculating prayer times, you can use prayer times from [Mawaqit](https://mawaqit.net/) mosques. This is useful if you want to sync with your local mosque's schedule.
+
+### Step 1: Generate the Mawaqit JSON file
+
+The included `mawaqit_util.py` helper script uses the [mawaqit](https://pypi.org/project/mawaqit/) Python library.
+
+First, install it:
+```bash
+pip install mawaqit
+```
+
+Then use the included `mawaqit_util.py` script to find your mosque and generate the JSON file:
+
+```bash
+# Find nearby mosques by coordinates
+python /home/pi/adhan/mawaqit_util.py -u your@email.com -p yourpassword nearby --lat 48.85 --lng 2.35
+
+# Or search mosques by name
+python /home/pi/adhan/mawaqit_util.py -u your@email.com -p yourpassword search "mosque name"
+```
+
+The `nearby` and `search` commands will display a list of mosques with their names and UUIDs:
+```
+1. Mosque Name
+   UUID: 30872b8b-c065-4d14-bca6-8cb813dde014
+   Address: 123 Street, City
+```
+
+Use the UUID from the results to generate the JSON file:
+```bash
+python /home/pi/adhan/mawaqit_util.py -u your@email.com -p yourpassword generate 30872b8b-c065-4d14-bca6-8cb813dde014 -o /home/pi/adhan/mawaqit.json
+```
+
+Note: You need a Mawaqit account (free) to use the API. Register at [mawaqit.net](https://mawaqit.net/).
+
+### Step 2: Run the adhan clock with mawaqit
+
+```bash
+/home/pi/adhan/updateAzaanTimers.py --mawaqit /home/pi/adhan/mawaqit.json
+```
+
+The mawaqit JSON file contains a full year calendar, so you only need to regenerate it once a year.
+
+For subsequent runs, just run without arguments (settings are saved):
+```bash
+/home/pi/adhan/updateAzaanTimers.py
+```
+
+To switch back to calculated times:
+```bash
+/home/pi/adhan/updateAzaanTimers.py --lat <YOUR_LAT> --lng <YOUR_LNG> --method <METHOD>
+```
+
 Please see the [manual](http://praytimes.org/manual) for advanced configuration instructions. 
 
 There are 2 additional arguments that are optional, you can set them in the first run or

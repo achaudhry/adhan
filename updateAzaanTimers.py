@@ -3,6 +3,8 @@
 import datetime
 import time
 import sys
+import json
+import os
 from os.path import dirname, abspath, join as pathjoin
 import argparse
 
@@ -32,15 +34,23 @@ def parseArgs():
                         help='Volume for fajr azaan in millibels, 1500 is loud and -30000 is quiet (default 0)')
     parser.add_argument('--azaan-volume', type=int, dest='azaan_vol',
                         help='Volume for azaan (other than fajr) in millibels, 1500 is loud and -30000 is quiet (default 0)')
+    parser.add_argument('--mawaqit', dest='mawaqit_file',
+                        help='Path to mawaqit JSON file for prayer times (alternative to lat/lng/method)')
     return parser
 
 def mergeArgs(args):
     file_path = pathjoin(root_dir, '.settings')
     # load values
-    lat = lng = method = fajr_azaan_vol = azaan_vol = None
+    lat = lng = method = fajr_azaan_vol = azaan_vol = mawaqit_file = None
     try:
         with open(file_path, 'rt') as f:
-            lat, lng, method, fajr_azaan_vol, azaan_vol = f.readlines()[0].split(',')
+            parts = f.readlines()[0].strip().split(',')
+            # Backward compatible:
+            # - old format: lat,lng,method,fajr_volume,azaan_volume
+            # - new format: lat,lng,method,fajr_volume,azaan_volume,mawaqit_file
+            while len(parts) < 6:
+                parts.append('')
+            lat, lng, method, fajr_azaan_vol, azaan_vol, mawaqit_file = parts[:6]
     except:
         print('No .settings file found')
     # merge args
@@ -62,11 +72,50 @@ def mergeArgs(args):
         azaan_vol = args.azaan_vol
     if azaan_vol:
         azaan_vol = int(azaan_vol)
+    if args.mawaqit_file:
+        mawaqit_file = args.mawaqit_file
+    elif mawaqit_file:
+        mawaqit_file = mawaqit_file.strip() or None
     # save values
     with open(file_path, 'wt') as f:
-        f.write('{},{},{},{},{}'.format(lat or '', lng or '', method or '',
-                fajr_azaan_vol or 0, azaan_vol or 0))
-    return lat or None, lng or None, method or None, fajr_azaan_vol or 0, azaan_vol or 0 
+        f.write('{},{},{},{},{},{}'.format(lat or '', lng or '', method or '',
+                fajr_azaan_vol or 0, azaan_vol or 0, mawaqit_file or ''))
+    return lat or None, lng or None, method or None, fajr_azaan_vol or 0, azaan_vol or 0, mawaqit_file or None
+
+def get_times_from_mawaqit(mawaqit_file):
+    """Read prayer times from a mawaqit JSON file for the current date."""
+    # Resolve relative paths
+    if not os.path.isabs(mawaqit_file):
+        mawaqit_file = pathjoin(root_dir, mawaqit_file)
+
+    # Validate file exists
+    if not os.path.exists(mawaqit_file):
+        print(f"Error: Mawaqit file not found: {mawaqit_file}")
+        sys.exit(1)
+
+    # Load and parse JSON
+    with open(mawaqit_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    # Get times for current date
+    now = datetime.datetime.now()
+    month_idx = now.month - 1  # 0-indexed
+    day_key = str(now.day)
+
+    try:
+        day_times = data['calendar'][month_idx][day_key]
+    except (KeyError, IndexError) as e:
+        print(f"Error: Could not find times for {now.month}/{now.day} in mawaqit file: {e}")
+        sys.exit(1)
+
+    # [Fajr, Shuruq, Dhuhr, Asr, Maghrib, Isha]
+    return {
+        'fajr': day_times[0],
+        'dhuhr': day_times[2],
+        'asr': day_times[3],
+        'maghrib': day_times[4],
+        'isha': day_times[5]
+    } 
 
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)  
@@ -103,21 +152,27 @@ def addClearLogsCronJob (objCronTab, strCommand):
 parser = parseArgs()
 args = parser.parse_args()
 #Merge args with saved values if any
-lat, lng, method, fajr_azaan_vol, azaan_vol = mergeArgs(args)
-print(lat, lng, method, fajr_azaan_vol, azaan_vol)
-#Complain if any mandatory value is missing
-if not lat or not lng or not method:
-    parser.print_usage()
-    sys.exit(1)
-
-#Set calculation method, utcOffset and dst here
-#By default system timezone will be used
-#--------------------
-PT.setMethod(method)
-utcOffset = -(time.timezone/3600)
-isDst = time.localtime().tm_isdst
+lat, lng, method, fajr_azaan_vol, azaan_vol, mawaqit_file = mergeArgs(args)
+print(lat, lng, method, fajr_azaan_vol, azaan_vol, mawaqit_file)
 
 now = datetime.datetime.now()
+
+# Determine mode and get prayer times
+if mawaqit_file:
+    # Mawaqit mode
+    if args.lat or args.lng or args.method:
+        print("Warning: Using mawaqit file; --lat, --lng, --method will be ignored")
+    times = get_times_from_mawaqit(mawaqit_file)
+else:
+    # Praytimes mode (original behavior)
+    if not lat or not lng or not method:
+        parser.print_usage()
+        sys.exit(1)
+    PT.setMethod(method)
+    utcOffset = -(time.timezone/3600)
+    isDst = time.localtime().tm_isdst
+    times = PT.getTimes((now.year, now.month, now.day), (lat, lng), utcOffset, isDst)
+
 strPlayFajrAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-fajr.mp3 {}'.format(root_dir, root_dir, fajr_azaan_vol)
 strPlayAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-Madinah.mp3 {}'.format(root_dir, root_dir, azaan_vol)
 strUpdateCommand = '{}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
@@ -125,10 +180,7 @@ strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
 strJobComment = 'rpiAdhanClockJob'
 
 # Remove existing jobs created by this script
-system_cron.remove_all(comment=strJobComment)
-
-# Calculate prayer times
-times = PT.getTimes((now.year,now.month,now.day), (lat, lng), utcOffset, isDst) 
+system_cron.remove_all(comment=strJobComment) 
 print(times['fajr'])
 print(times['dhuhr'])
 print(times['asr'])
