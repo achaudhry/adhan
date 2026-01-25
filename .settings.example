@@ -1,0 +1,5 @@
+# Copy this file to `.settings` and replace the placeholders.
+# Format: lat,lng,method,fajr_volume_percent,azaan_volume_percent,fajr_audio,azaan_audio
+#
+# Keep it as a single CSV line with 7 values.
+,,MWL,100,100,Adhan-fajr.mp3,Adhan-Madinah.mp3

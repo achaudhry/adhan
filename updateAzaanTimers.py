@@ -5,6 +5,7 @@ import time
 import sys
 from os.path import dirname, abspath, join as pathjoin
 import argparse
+import shlex
 
 root_dir = dirname(abspath(__file__))
 sys.path.insert(0, pathjoin(root_dir, 'crontab'))
@@ -29,20 +30,35 @@ def parseArgs():
                         dest='method',
                         help='Method of calculation')
     parser.add_argument('--fajr-azaan-volume', type=int, dest='fajr_azaan_vol',
-                        help='Volume for fajr azaan in millibels, 1500 is loud and -30000 is quiet (default 0)')
+                        help='Volume for fajr azaan as a percent (0-100). 100 is normal (default 100)')
     parser.add_argument('--azaan-volume', type=int, dest='azaan_vol',
-                        help='Volume for azaan (other than fajr) in millibels, 1500 is loud and -30000 is quiet (default 0)')
+                        help='Volume for azaan (other than fajr) as a percent (0-100). 100 is normal (default 100)')
+    parser.add_argument('--fajr-audio', dest='fajr_audio',
+                        help='MP3 filename or path for fajr (default Adhan-fajr.mp3)')
+    parser.add_argument('--azaan-audio', dest='azaan_audio',
+                        help='MP3 filename or path for all other prayers (default Adhan-Madinah.mp3)')
     return parser
 
 def mergeArgs(args):
     file_path = pathjoin(root_dir, '.settings')
     # load values
-    lat = lng = method = fajr_azaan_vol = azaan_vol = None
+    lat = lng = method = fajr_azaan_vol = azaan_vol = fajr_audio = azaan_audio = None
     try:
         with open(file_path, 'rt') as f:
-            lat, lng, method, fajr_azaan_vol, azaan_vol = f.readlines()[0].split(',')
+            parts = f.readlines()[0].strip().split(',')
+            # Backward compatible:
+            # - old format: lat,lng,method,fajr_volume,azaan_volume
+            # - new format: lat,lng,method,fajr_volume,azaan_volume,fajr_audio,azaan_audio
+            while len(parts) < 7:
+                parts.append('')
+            lat, lng, method, fajr_azaan_vol, azaan_vol, fajr_audio, azaan_audio = parts[:7]
     except:
         print('No .settings file found')
+    def clamp_percent(v):
+        return max(0, min(100, int(v)))
+    def norm_audio(v, default_name):
+        v = (v or '').strip()
+        return v or default_name
     # merge args
     if args.lat:
         lat = args.lat
@@ -56,17 +72,28 @@ def mergeArgs(args):
         method = args.method
     if args.fajr_azaan_vol:
         fajr_azaan_vol = args.fajr_azaan_vol
-    if fajr_azaan_vol:
-        fajr_azaan_vol = int(fajr_azaan_vol)
     if args.azaan_vol:
         azaan_vol = args.azaan_vol
+    if args.fajr_audio:
+        fajr_audio = args.fajr_audio
+    if args.azaan_audio:
+        azaan_audio = args.azaan_audio
+
+    if fajr_azaan_vol:
+        fajr_azaan_vol = clamp_percent(fajr_azaan_vol)
     if azaan_vol:
-        azaan_vol = int(azaan_vol)
+        azaan_vol = clamp_percent(azaan_vol)
+    fajr_audio = norm_audio(fajr_audio, 'Adhan-fajr.mp3')
+    azaan_audio = norm_audio(azaan_audio, 'Adhan-Madinah.mp3')
+
     # save values
     with open(file_path, 'wt') as f:
-        f.write('{},{},{},{},{}'.format(lat or '', lng or '', method or '',
-                fajr_azaan_vol or 0, azaan_vol or 0))
-    return lat or None, lng or None, method or None, fajr_azaan_vol or 0, azaan_vol or 0 
+        f.write('{},{},{},{},{},{},{}'.format(
+            lat or '', lng or '', method or '',
+            fajr_azaan_vol or 100, azaan_vol or 100,
+            fajr_audio, azaan_audio
+        ))
+    return lat or None, lng or None, method or None, fajr_azaan_vol or 100, azaan_vol or 100, fajr_audio, azaan_audio 
 
 def addAzaanTime (strPrayerName, strPrayerTime, objCronTab, strCommand):
   job = objCronTab.new(command=strCommand,comment=strPrayerName)  
@@ -103,8 +130,8 @@ def addClearLogsCronJob (objCronTab, strCommand):
 parser = parseArgs()
 args = parser.parse_args()
 #Merge args with saved values if any
-lat, lng, method, fajr_azaan_vol, azaan_vol = mergeArgs(args)
-print(lat, lng, method, fajr_azaan_vol, azaan_vol)
+lat, lng, method, fajr_azaan_vol, azaan_vol, fajr_audio, azaan_audio = mergeArgs(args)
+print(lat, lng, method, fajr_azaan_vol, azaan_vol, fajr_audio, azaan_audio)
 #Complain if any mandatory value is missing
 if not lat or not lng or not method:
     parser.print_usage()
@@ -118,8 +145,20 @@ utcOffset = -(time.timezone/3600)
 isDst = time.localtime().tm_isdst
 
 now = datetime.datetime.now()
-strPlayFajrAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-fajr.mp3 {}'.format(root_dir, root_dir, fajr_azaan_vol)
-strPlayAzaanMP3Command = '{}/playAzaan.sh {}/Adhan-Madinah.mp3 {}'.format(root_dir, root_dir, azaan_vol)
+fajr_audio_path = fajr_audio if fajr_audio.startswith('/') else pathjoin(root_dir, fajr_audio)
+azaan_audio_path = azaan_audio if azaan_audio.startswith('/') else pathjoin(root_dir, azaan_audio)
+strPlayFajrAzaanMP3Command = '{} {} {} >> {} 2>&1'.format(
+    shlex.quote(pathjoin(root_dir, 'playAzaan.sh')),
+    shlex.quote(fajr_audio_path),
+    shlex.quote(str(fajr_azaan_vol)),
+    shlex.quote(pathjoin(root_dir, 'adhan.log')),
+)
+strPlayAzaanMP3Command = '{} {} {} >> {} 2>&1'.format(
+    shlex.quote(pathjoin(root_dir, 'playAzaan.sh')),
+    shlex.quote(azaan_audio_path),
+    shlex.quote(str(azaan_vol)),
+    shlex.quote(pathjoin(root_dir, 'adhan.log')),
+)
 strUpdateCommand = '{}/updateAzaanTimers.py >> {}/adhan.log 2>&1'.format(root_dir, root_dir)
 strClearLogsCommand = 'truncate -s 0 {}/adhan.log 2>&1'.format(root_dir)
 strJobComment = 'rpiAdhanClockJob'
